@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Vue 도움되는 콘솔 경고를 포함한 개발 버전 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>Vue Start</title>
+</head>
+<body>
+  <div id="app">
+    {{ message }} - {{ count }}
+    <button v-on:click="plus">plus</button>
+    <button v-on:click="minus">minus</button>
+  </div>
+
+  
+  <script>
+    // Vue 코드가 작성되는 곳
+    const app = new Vue({
+      el: '#app', // CSS Selector
+      data: {
+        message: 'Hello, Vue!',
+        count: 0,
+      },
+      methods: {
+        plus: function() {
+          // function 키워드로 함수정의를 해야 this 가 Vue 인스턴스를 가르킨다. 
+          this.count++
+        },
+        minus: function() {
+          this.count--
+        },
+      }
+    })
+  </script>
+</body>
+</html>
