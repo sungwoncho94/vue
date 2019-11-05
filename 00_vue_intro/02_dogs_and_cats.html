@@ -33,24 +33,28 @@
         catImage: '',
       },
       methods: {
-        getDogImage: function() {
+        getDogImage: async function() {
           const API_URL = 'https://dog.ceo/api/breeds/image/random'
-          // API URL 로 요청을 보내 응답받은 강아지 사진 url 을 Vue Instance 의 dogImage data 값에 할당한다.
-          axios.get(API_URL)
-            .then((response) => {
-              // 응답 받은 이미지 url 을 vue instance 의 dogImage 값에 할당!
-              this.dogImage = response.data.message
-            })
+          // // API URL 로 요청을 보내 응답받은 강아지 사진 url 을 Vue Instance 의 dogImage data 값에 할당한다.
+          // axios.get(API_URL)
+          //   .then((response) => {
+          //     // 응답 받은 이미지 url 을 vue instance 의 dogImage 값에 할당!
+          //     this.dogImage = response.data.message
+          //   })
+
+          const response = await axios.get(API_URL)
+          this.dogImage = response.data.message
         },
-        getCatImage: function() {
+        getCatImage: async function() {
           // API URL 로 요청을 보내 응답받은 고양이 사진 url 을 Vue Instance 의 catImage 값에 할당한다.
           const API_URL = 'https://api.thecatapi.com/v1/images/search'
-          
-          axios.get(API_URL)
-            .then(response => {
-              this.catImage = response.data[0].url
-            })
-        }
+          const response = await axios.get(API_URL)
+          this.catImage = response.data[0].url
+        //   axios.get(API_URL)
+        //     .then(response => {
+        //       this.catImage = response.data[0].url
+        //     })
+        // }
       },
       // 최초 vue instance 가 생성된 후 실행하는 함수
       created: function() {

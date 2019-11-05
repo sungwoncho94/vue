@@ -17,8 +17,23 @@
 <body>
   <div id="app">
     <h1 v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">TODO APP</h1>
+
+    <select v-model="showMode">
+      <option value="all">All</option>
+      <option value="notCompleted">Todo List</option>
+      <option value="completed">Completed List</option>
+      
+    </select>
+
     <ul>
-      <li v-for="todo in todos" v-bind:class="{ completed: todo.completed }">
+      <!-- showMode에 따라서 보여지도록 하겠다 -->
+      <!-- app.showMode = 'completed'  로 바꿔보기 -->
+      <!-- 해당 data와 태그가 완전하게 연동되야 즉각적으로 변동이 저장됨 -> v-binding -->
+      <li 
+        v-for="todo in todoByShowMode()" 
+        v-bind:class="{ completed: todo.completed }" 
+        v-bind:key="todo.id"
+      >
         <input type="checkbox" v-model="todo.completed">
         {{ todo.content }}
       </li>
@@ -29,44 +44,77 @@
     <footer>
       <button v-on:click="clearCompleted">Clear Completed</button>
     </footer>
+
+    <!-- input창에 글을 쓰면 아래에도 작성됨 -->
+    <!-- 근데 우리가 쓰는 순서 반대로 작성되도록 할 것임 -->
+    <!-- {{ reversedNewTodo }} -->
+
   </div>
 
   <script>
+    // storage_key를 열쇠로 목록을 불러올것임
+    const STORAGE_KEY = 'vue-todos'  // key-value는 목록들
+    const todoStorage = { 
+      fetch: function() {
+        // string => Array
+        return JSON.parse(localStorage.getItem(STORAGE_KEY))
+      },
+      save: function(todos) {
+        // Array => String
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+      }
+    }
+
+
     const app = new Vue({
       el: '#app',
       data: {
         todos: [
-          {
-            content: '저녁 메뉴 고민하기',
-            completed: true,
-          },
-          {
-            content: '사다리 타기',
-            completed: false,
-          },
-          {
-            content: '약속의 2시 낮잠자기',
-            completed: false,
-          },
-          {
-            content: '야자하기',
-            completed: false,
-          },
+          // {
+          //   id: 1,
+          //   content: '저녁 메뉴 고민하기',
+          //   completed: false,
+          // },
+          // {
+          //   id: 2,
+          //   content: '사다리 타기',
+          //   completed: true,
+          // },
+          // {
+          //   id: 3,
+          //   content: '약속의 2시 낮잠자기',
+          //   completed: false,
+          // },
+          // {
+          //   id: 4,
+          //   content: '야자하기',
+          //   completed: true,
+          // }
         ],
         newTodo: '',
+        // CSS
         activeColor: 'orange',
         fontSize: 30,
+        // Show mode
+        showMode: 'all',   // default = 'all' -> 전체보기모드
       },
       methods: {
-        toggleTodo: function(todo) {
-          todo.completed = !todo.completed
+        toggleTodo: function(todo) {  // 체크 할 때
+          todo.completed = !todo.completed  // 반대값 넣겠다
+          this.todos = todoStorage.fetch()
         },
-        addTodo: function() {
-          this.todos.push({
+        addTodo: function(newTodo) {
+          if (this.newTodo) {
+            this.todos.push({
+            // id는 그 때에 생긴 시간초를 기준으로 정해줌
+            id: new Date().getTime(),
             content: this.newTodo,
             completed: false,
           })
-          this.newTodo = ''
+          this.newTodo = ''  // 초기화
+          todoStorage.save(this.todos)
+          }
+          
         },
         clearCompleted: function() {
           // Completed 가 true 인 모든 todo 를 리스트에서 삭제한다.
@@ -86,9 +134,60 @@
           //   return !todo.completed
           // })
           this.todos = this.todos.filter(todo => !todo.completed)
+          
+        },
+        todoByShowMode: function() {
+          // showMode에 따라 todoList를 새롭게 반환한다.
+          if (this.showMode === 'notCompleted') {
+            // 완료되지 않은 목록들만 반환
+            return this.todos.filter(todo => {
+              return !todo.completed
+            })
+          } else if (this.showMode === 'completed') {
+            return this.todos.filter(todo => {
+              return todo.completed
+            })
+          } else { // all 이라면
+            return this.todos
+          }
         }
       },
+      computed: {
+        // data를 계산해주는 method
+        reversedNewTodo: function() {
+          return this.newTodo.split('').reverse().join('')
+        }
+      },
+      create() {
+        // View instance가 생성되면 실행하는 함수
+        this.todos = todoStorage.fetch()
+      },
+      watch: { // 특정 데이터가 바뀔 때마다 실행하는 함수를 정의하는 곳
+        // 오브젝트 안에 함수를 만들어줌 - 내가 실행하고 싶은 항목과 똑같은 이름의 함수를 만들어줌
+        // todos: function() {  // todos라는 데이터가 바뀔 때 마다 실행하는 함수
+        //   // todolist의 값이 바뀔때마다 자동으로 저장을 지정하는 함수
+        //   todoStorage.save(this.todos)
+        todos: {
+          handler: function() {  // todos가 바뀔 때 마다 handler를 실행할 것
+            todoStorage.save(this.todos)
+          },
+          deep: true,  // object의 nested 되어있는 item도 감시할지 유무 판단
+        }
+      }
     })
   </script>
 </body>
 </html>
+
+
+<!-- 실습 -->
+<!-- STORAGE_KEY
+"vue-todos"
+todoStorage.fetch()
+null
+todoStorage.save()
+undefined
+todoStorage.save(app.todos)
+undefined
+todoStorage.fetch()
+(4) [{…}, {…}, {…}, {…}] -->
