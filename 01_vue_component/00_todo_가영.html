@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Todo</title>
+</head>
+
+<body>
+  <div id="app">
+    <input type="text" v-model="newTodo">
+    <!-- TODO: 누를 때 마다 addTodo 함수를 실행한다. -->
+    <button v-on:click="addTodo">+</button>
+    <!-- TODO: todos 를 반복하며 todo 를 li 태그로 표현한다. -->
+    <!-- <li v-for="todo in todos">
+     <input type="text" v-bind="newTodo.id">
+     {{ todo }}
+   </li> -->
+    <li v-for="todo in todos">
+      <span>{{ todo.content }}</span>
+      <!-- TODO: 누를 때 마다 removeTodo 함수를 실행한다. -->
+      <button>x</button>
+    </li>
+  </div>
+  <!-- v-model: 사용자의 입력을 받는 select, textarea, checkbox, input 이랑 data랑 양방향 바인딩 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        todos: [],
+        // TODO: input 과 양방향 바인딩 한다.
+        // input이랑 newTodo를 연동시키기
+        newTodo: '',
+      },
+      methods: {
+        // TODO: newTodo 에 저장되어 있는 값을 꺼내서 todos 에 저장할 object 를 만든 후 push 한다.
+        // (object 는 content 와 id 속성을 가지고 있다.)
+        addTodo: function () {
+          // console.log(this)  // Vue
+          if (this.newTodo) {
+            this.todos.push({
+              id: new Date().getTime(),
+              content: this.newTodo,
+            })
+          }
+        },
+        // TODO: todo 의 id 값을 인자로 받아 todos 에서부터 해당 id 값을 가진 todo 를 삭제한다.
+        removeTodo: function () {
+          // if (this.todos.)
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Todo</title>
+  <style>
+    .todo-list {
+      display: inline-block;
+      width: 30%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+
+    <div class="todo-list">
+      <h2>취업준비</h2>
+      <!-- input을 newTodo라고 명시해줘야 컴퓨터가 인식하고 뽑아낼 수 있다 -->
+      <!-- v-model : 사용자한테 입력받는 태그들과 vue의 data와 양방향 binding시킬 때 사용 -->
+      <input type="text" v-model="newTodo">
+      <!-- TODO: 누를 때 마다 addTodo 함수를 실행한다. -->
+      <!-- 버튼을 누를 때마다 addTodo함수가 실행됨 -->
+      <button v-on:click="addTodo">+</button>
+      <ul>
+        <!-- TODO: todos 를 반복하며 todo 를 li 태그로 표현한다. -->
+        <!-- li태그 내에서 모든 목록을 돌면서 보여줘야함!! -->
+        <!-- for문을 돌면 태그를 여러개 생성할텐데 태그와 데이터를 1:1매칭시켜줘야함 -> v-bind -->
+        <li v-for="todo in todos" v-bind:key="">
+          <span>{{ todo.content }}</span>
+          <!-- TODO: 누를 때 마다 removeTodo 함수를 실행한다. -->
+          <button v-on:click="removeTodo(todo.id)">x</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="todo-list">
+      <h2>SSAFY</h2>
+      <!-- input을 newTodo라고 명시해줘야 컴퓨터가 인식하고 뽑아낼 수 있다 -->
+      <!-- v-model : 사용자한테 입력받는 태그들과 vue의 data와 양방향 binding시킬 때 사용 -->
+      <input type="text" v-model="newTodo">
+      <!-- TODO: 누를 때 마다 addTodo 함수를 실행한다. -->
+      <!-- 버튼을 누를 때마다 addTodo함수가 실행됨 -->
+      <button v-on:click="addTodo">+</button>
+      <ul>
+        <!-- TODO: todos 를 반복하며 todo 를 li 태그로 표현한다. -->
+        <!-- li태그 내에서 모든 목록을 돌면서 보여줘야함!! -->
+        <!-- for문을 돌면 태그를 여러개 생성할텐데 태그와 데이터를 1:1매칭시켜줘야함 -> v-bind -->
+        <li v-for="todo in todos" v-bind:key="todo.id">
+          <span>{{ todo.content }}</span>
+          <!-- TODO: 누를 때 마다 removeTodo 함수를 실행한다. -->
+          <button v-on:click="removeTodo(todo.id)">x</button>
+        </li>
+      </ul>
+    </div>
+
+    <div class="todo-list">
+      <h2>기타</h2>
+      <!-- input을 newTodo라고 명시해줘야 컴퓨터가 인식하고 뽑아낼 수 있다 -->
+      <!-- v-model : 사용자한테 입력받는 태그들과 vue의 data와 양방향 binding시킬 때 사용 -->
+      <input type="text" v-model="newTodo">
+      <!-- TODO: 누를 때 마다 addTodo 함수를 실행한다. -->
+      <!-- 버튼을 누를 때마다 addTodo함수가 실행됨 -->
+      <button v-on:click="addTodo">+</button>
+      <ul>
+        <!-- TODO: todos 를 반복하며 todo 를 li 태그로 표현한다. -->
+        <!-- li태그 내에서 모든 목록을 돌면서 보여줘야함!! -->
+        <!-- for문을 돌면 태그를 여러개 생성할텐데 태그와 데이터를 1:1매칭시켜줘야함 -> v-bind -->
+        <li v-for="todo in todos" v-bind:key="">
+          <span>{{ todo.content }}</span>
+          <!-- TODO: 누를 때 마다 removeTodo 함수를 실행한다. -->
+          <button v-on:click="removeTodo(todo.id)">x</button>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        todos: [],
+        // TODO: input 과 양방향 바인딩 한다.  ->  input에 v-model = newTodo 해주기
+        newTodo: '',
+      },
+      methods: {
+        // 함수는 methods에서 만들어야함
+        addTodo: function () {
+          // TODO: newTodo 에 저장되어 있는 값을 꺼내서 todos 에 저장할 object 를 만든 후 push 한다.
+          // (object 는 content 와 id 속성을 가지고 있다.)
+          // input에 입력된 값을 +를 누르면 li로 가게해야함  // input = newTodo   ,  li = todos
+
+          // input에 새로운 값이 있다면 todoList로 보냄
+          if (this.newTodo) {  // this -> app을 가르키는 것(일 수 도 있 음)
+            this.todos.push({  // 이것을 todos로 push한다
+              id: new Date().getTime(),  // 입력시간을 기준으로 id값을 추가해줌 -> 나중에 꺼내기 쉽게
+              content: this.newTodo,
+            })
+            this.newTodo = ""
+          }
+        },
+        removeTodo: function (todo_id) {
+          // TODO: todo 의 id 값을 인자로 받아 todos 에서부터 해당 id 값을 가진 todo 를 삭제한다.
+          // 삭제할 todo_id를 제외한 새로운 목록을 만든다
+          const newTodos = this.todos.filter(todo => {
+            return todo.id !== todo_id
+          })
+          this.todos = newTodos
+        }
+      }
+    })
+  </script>
+</body>
+</html>

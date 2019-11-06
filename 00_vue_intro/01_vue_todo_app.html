@@ -17,8 +17,8 @@
 <body>
   <div id="app">
     <h1 v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }">TODO APP</h1>
-
     <select v-model="showMode">
+    <!-- v-model : 사용자한테 입력받는 태그들과 vue의 data와 양방향 binding시킬 때 사용 -->
       <option value="all">All</option>
       <option value="notCompleted">Todo List</option>
       <option value="completed">Completed List</option>
@@ -40,6 +40,7 @@
       <!-- <li v-else v-on:click="toggleTodo(todo)">[완료!]</li> -->
     </ul>
     <input v-model="newTodo" type="text" v-on:keydown.enter="addTodo">
+    <!-- v-model : 사용자한테 입력받는 태그들과 vue의 data와 양방향 binding시킬 때 사용 -->
 
     <footer>
       <button v-on:click="clearCompleted">Clear Completed</button>

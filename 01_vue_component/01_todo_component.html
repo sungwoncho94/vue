@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .todo-list {
+      display: inline-block;
+      width: 30%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h1>sungwon's Todo app</h1>
+    <!-- 부모 component가 자식 component에게 넘겨주는 값 - category -->
+    <todo-list category="취업준비"></todo-list>
+    <todo-list category="SSAFY"></todo-list>
+    <todo-list category="기타"></todo-list>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script>
+    // '' 이 아니라 ``를 사용해야한다
+    Vue.component('todo-list', {
+      template: `<div class="todo-list">
+      <h2>{{ category }}</h2>
+      <input type="text" v-model="newTodo">
+      <button v-on:click="addTodo">+</button>
+      <ul>
+        <li v-for="todo in todos" v-bind:key="">
+          <span>{{ todo.content }}</span>
+          <button v-on:click="removeTodo(todo.id)">x</button>
+        </li>
+      </ul>
+    </div>`,
+    // props = component에 data를 전달할 수 있도록 하는 속성
+    // <todo-list category="취업준비"></todo-list> category처럼 이름을 정한 후 template 안에 <h2>{{ category }}</h2> 로 전달
+    props: {
+      'category': {
+        type: String,
+        required: true,
+      },
+      // 'propA': Number,  // 숫자값만 허용할 것 (null은 어떤 type이든 허용) 
+      // 'propB': [String, Number],  // String Number 타입만 허용
+      // required -> 반드시 존재해야 하는 prop type
+      // 'propC': {
+      //   type: String,
+      //   required: true,
+      // },
+      // 숫자이며 기본값=100 
+      // 'propD': {
+      //   type: Number,
+      //   default: 100
+      // },
+      // 객체나 object는 반드시 함수형으로 반환시켜야함
+      // 'propE': {
+      //   type: Object,
+      //   default: function() {
+      //     return { message: 'hello'}
+      //   },
+      // }, 
+      // value를 받아서 유효성검사를 하고 시작한다.
+      // 'propF': {
+      //   validator: function(value) {
+      //     return value > 10
+      //   }
+      // },
+      },
+
+      // 일반 object로 작성하면 모든 component가 하나의 데이터를 공유할 수 있기 때문에 function{ return{ data }}안에 넣어준다
+      data: function () {
+        return {
+          todos: [],
+          newTodo: '',
+        }
+      },
+      methods: {
+        addTodo: function () {
+          // TODO: newTodo 에 저장되어 있는 값을 꺼내서 todos 에 저장할 object 를 만든 후 push 한다.
+          // (object 는 content 와 id 속성을 가지고 있다.)
+          // input에 입력된 값을 +를 누르면 li로 가게해야함  // input = newTodo   ,  li = todos
+
+          // input에 새로운 값이 있다면 todoList로 보냄
+          if (this.newTodo) {  // this -> app을 가르키는 것(일 수 도 있 음)
+            this.todos.push({  // 이것을 todos로 push한다
+              id: new Date().getTime(),  // 입력시간을 기준으로 id값을 추가해줌 -> 나중에 꺼내기 쉽게
+              content: this.newTodo,
+            })
+            this.newTodo = ""
+          }
+        },
+        removeTodo: function (todo_id) {
+          // TODO: todo 의 id 값을 인자로 받아 todos 에서부터 해당 id 값을 가진 todo 를 삭제한다.
+          // 삭제할 todo_id를 제외한 새로운 목록을 만든다
+          const newTodos = this.todos.filter(todo => {
+            return todo.id !== todo_id
+          })
+          this.todos = newTodos
+        }
+      },
+    })
+  </script>
+
+  <script>
+    // 새로운 앱을 렌더링 한다
+    const app = new Vue({
+      // 어디? id=app인 태그에!
+      el: '#app',
+    })
+  </script>
+</body>
+
+</html>
